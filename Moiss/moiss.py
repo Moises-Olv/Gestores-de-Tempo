@@ -2,6 +2,12 @@
 # 2°B - Vespertino
 # Alunos: Moisés Claudino Oliveira
 
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#    Tratamento feito no dia 16 |
+#                               |
+#                               V
 import os
 import re
 
@@ -129,7 +135,10 @@ class SistemaDeGerenciamento:
             horario_escolhido] >= self.refeitorio.maximo_por_janela:
             print("Erro: Horário inválido ou lotado. Tente novamente.")
             return
-
+#------------------------------------------------------------------------------------------------------------------------------------------
+#    Tratamento feito no dia 17|
+#                              |
+#                              V
         # Composição: o usuário faz parte do sistema e é gerenciado por ele
         usuario = Usuario(nome, matricula, dia_contraturno, senha, self.janelas_de_tempo[horario_escolhido])
         self.usuarios[nome] = usuario
@@ -234,11 +243,8 @@ class SistemaDeGerenciamento:
                 print("")
                 print("               Saindo do sistema...")
                 print("|------------------------------------------------|")
-                print("|          Código feito pelos Alunos             |")
-                print("|-Ana Clara Rodrigues                            |")
-                print("|-Lívia Esteves de Oliveira                      |")
-                print("|-Moisés Claudino Oliveira                       |")
-                print("|-Sarha Sthefanny Araripe Silva                  |")
+                print("|          Código feito pelo Aluno:              |")
+                print("|          -Moisés Claudino Oliveira             |")
                 print("|________________________________________________|")
 
                 break
