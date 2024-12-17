@@ -114,8 +114,8 @@ class SistemaDeGerenciamento:
             print(f"Ocorreu um erro ao tentar fazer o login:{e}")
 
     def menu_usuario(self, usuario):
+        try:
         while True:
-            try:
                 print("|-----------------------------|")
                 print("|       MENU DE USUÁRIO       |")
                 print("|-----------------------------|")
@@ -154,8 +154,8 @@ class SistemaDeGerenciamento:
                 print(e)
   
     def main(self):
+        try:
         while True:
-            try:
                 print("|----------------------------------------------------|")
                 print("|       Sistema de Gerenciamento de refeitório       |")
                 print("|----------------------------------------------------|")
