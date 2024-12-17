@@ -7,8 +7,11 @@ print("               |-----------------------|")
 print("               |   GESTORES DE TEMPO   |")
 print("               |                       |")
 print("               |-----------------------|")
-print("       ")
+print("                                        ")
 # Iniciar o programa
 if __name__ == "__main__":
     sistema = SistemaDeGerenciamento('usuarios.txt')
-    sistema.main()
+    try:
+        sistema.main()
+    except KeyboardInterrupt:
+        print("\nPrograma  finalizado pelo usuario")

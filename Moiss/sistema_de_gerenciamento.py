@@ -1,6 +1,8 @@
 import os
 from classe_usuarios import Usuario
-from class_refeitorio import Refeitorio
+from class_refeitorio import Refeitorio, validar_hora
+
+
 class SistemaDeGerenciamento:
     def __init__(self, caminho_arquivo):
         self.caminho_arquivo = caminho_arquivo
@@ -27,39 +29,45 @@ class SistemaDeGerenciamento:
         self.carregar_usuarios()
 
     def cadastrar_usuario(self):
-        nome = input("Digite o seu Nickname da vida Real: ")
-        matricula = input("Matricula ou CPF: ")
+        try:
+            nome = input("Digite o seu Nickname da vida Real: ")
+            matricula = input("Matricula ou CPF: ")
 
-        if not matricula:
-            print("Erro: Matrícula ou CPF não pode ser vazia!!!")
-            return
+            if not matricula:
+                raise ValueError("Matrícula ou CPF não pode ser vazia!!!")
 
-        print("Escolha seu dia de contraturno:")
-        for chave, dia in self.dias_da_semana.items():
-            print(f"{chave}: {dia}")
-        dia_contraturno = input("Dia de contraturno: ")
+            print("Escolha seu dia de contraturno:")
+            for chave, dia in self.dias_da_semana.items():
+                print(f"{chave}: {dia}")
+            dia_contraturno = input("Dia de contraturno: ")
 
-        if dia_contraturno not in self.dias_da_semana:
-            print("Erro: Dia de contra-turno inválido.")
-            return
+            if dia_contraturno not in self.dias_da_semana:
+                raise ValueError("Dia de contra-turno inválido.")
 
-        senha = input("Digite a palavra ultra-hipe-mega-secreta: ")
+            senha = input("Digite a palavra ultra-hipe-mega-secreta: ")
 
-        print("Escolha uma janela de horário para você almoçar:")
-        for chave, horario in self.janelas_de_tempo.items():
-            print(f"{chave}: {horario}")
-        horario_escolhido = input("Escolha um horário: ")
+            print("Escolha uma janela de horário para você almoçar:")
+            for chave, horario in self.janelas_de_tempo.items():
+                print(f"{chave}: {horario}")
+            horario_escolhido = input("Escolha um horário: ")
 
-        if horario_escolhido not in self.janelas_de_tempo or self.refeitorio.contagem_janelas[
-            horario_escolhido] >= self.refeitorio.maximo_por_janela:
-            print("Erro: Horário inválido ou lotado. Tente novamente.")
-            return
-        # Composição: o usuário faz parte do sistema e é gerenciado por ele
-        usuario = Usuario(nome, matricula, dia_contraturno, senha, self.janelas_de_tempo[horario_escolhido])
-        self.usuarios[nome] = usuario
-        self.salvar_usuario_arquivo(usuario)
-        self.refeitorio.contagem_janelas[horario_escolhido] += 1
-        print("Usuário cadastrado com sucesso (°u°)")
+            if horario_escolhido not in self.janelas_de_tempo or self.refeitorio.contagem_janelas[
+                horario_escolhido] >= self.refeitorio.maximo_por_janela:
+                raise ValueError("Horário inválido ou lotado. Tente novamente.")
+
+            # Composição: o usuário faz parte do sistema e é gerenciado por ele
+            usuario = Usuario(nome, matricula, dia_contraturno, senha, self.janelas_de_tempo[horario_escolhido])
+            self.usuarios[nome] = usuario
+            self.salvar_usuario_arquivo(usuario)
+            self.refeitorio.contagem_janelas[horario_escolhido] += 1
+            print("Usuário cadastrado com sucesso (°u°)")
+        except ValueError as e:
+            print(f"Erro: {e}")
+
+        except Exception as e:
+            print(f"Ocorreu um erro ao cadastrar o usuário: {e}")
+        finally:
+            print("Fim do processo de cadastro.")
 
     def salvar_usuario_arquivo(self, usuario):
         try:
@@ -88,19 +96,24 @@ class SistemaDeGerenciamento:
                 print(f"Ocorreu um erro ao carregar os usuários: {e}")
 
     def login(self):
-        matricula = input("Matricula ou CPF: ")
-        senha = input("Digite a palavra ultra-hipe-mega-secreta: ")
+        try:
+            matricula = input("Matricula ou CPF: ")
+            senha = input("Digite a palavra ultra-hipe-mega-secreta: ")
 
-        for usuario in self.usuarios.values():
-            if usuario.matricula == matricula and usuario.senha == senha:
-                print("Login bem-sucedido!")
-                print("    |")
-                print("    |")
-                print("    |")
-                print("    V")
-                self.menu_usuario(usuario)
-                return
-        print("Erro: Matrícula ou senha incorreta!")
+            for usuario in self.usuarios.values():
+                if usuario.matricula == matricula and usuario.senha == senha:
+                    print("Login bem-sucedido!")
+                    print("    |")
+                    print("    |")
+                    print("    |")
+                    print("    V")
+                    self.menu_usuario(usuario)
+                    return
+            raise ValueError("Matrícula ou senha incorreta!")
+        except ValueError as e:
+            print(f"Erro: {e}")
+        except Exception as e:
+            print(f"Ocorreu um erro ao tentar fazer login: {e}")
 
     def menu_usuario(self, usuario):
         while True:
@@ -114,30 +127,36 @@ class SistemaDeGerenciamento:
             print("4. Sair")
             opcao = input("Escolha uma opção: ")
 
-            if opcao == "1":
-                print("Que dia da semana é hoje? (1-5):")
-                for chave, dia in self.dias_da_semana.items():
-                    print(f"{chave}: {dia}")
-                dia_atual = input("Dia de hoje: ")
+            try:
+                if opcao == "1":
+                    print("Que dia da semana é hoje? (1-5):")
+                    for chave, dia in self.dias_da_semana.items():
+                        print(f"{chave}: {dia}")
+                    dia_atual = input("Dia de hoje: ")
 
-                if dia_atual not in self.dias_da_semana:
-                    print("Erro: Dia inválido.")
-                    continue
+                    if dia_atual not in self.dias_da_semana:
+                        raise ValueError("Dia inválido.")
 
-                hora_atual = input("Que horas são? (HH:MM): ")
-                if validar_hora(hora_atual):
-                    self.refeitorio.tentar_entrar(usuario, dia_atual, hora_atual)
+                    hora_atual = input("Que horas são? (HH:MM): ")
+                    if validar_hora(hora_atual):
+                        self.refeitorio.tentar_entrar(usuario, dia_atual, hora_atual)
+                    else:
+                        print("Erro: Formato de hora inválido. Use HH:MM.")
+                elif opcao == "2":
+                    self.refeitorio.sair(usuario)
+                elif opcao == "3":
+                    self.refeitorio.verificar_capacidade()
+                elif opcao == "4":
+                    print("Saindo do sistema.")
+                    break
                 else:
-                    print("Erro: Formato de hora inválido. Use HH:MM.")
-            elif opcao == "2":
-                self.refeitorio.sair(usuario)
-            elif opcao == "3":
-                self.refeitorio.verificar_capacidade()
-            elif opcao == "4":
-                print("Saindo do sistema.")
-                break
-            else:
-                print("Opção inválida. Tente novamente.")
+                    raise ValueError("Opção inválida. Tente novamente.")
+            except ValueError as e:
+                print(f"Erro: {e}")
+            except Exception as e:
+                print(f"Ocorreu um erro no menu do usuário: {e}")
+            finally:
+                print("Fazendo a validação do menu...")
 
     def main(self):
         while True:
@@ -150,18 +169,24 @@ class SistemaDeGerenciamento:
             print("3. Sair")
             opcao = input("Escolha uma opção: ")
 
-            if opcao == "1":
-                self.cadastrar_usuario()
-            elif opcao == "2":
-                self.login()
-            elif opcao == "3":
-                print("")
-                print("               Saindo do sistema...")
-                print("|------------------------------------------------|")
-                print("|          Código feito pelo Aluno:              |")
-                print("|          -Moisés Claudino Oliveira             |")
-                print("|________________________________________________|")
-
-                break
-            else:
-                print("Opção inválida. Tente novamente.")
+            try:
+                if opcao == "1":
+                    self.cadastrar_usuario()
+                elif opcao == "2":
+                    self.login()
+                elif opcao == "3":
+                    print("")
+                    print("               Saindo do sistema...")
+                    print("|------------------------------------------------|")
+                    print("|          Código feito pelo Aluno:              |")
+                    print("|          -Moisés Claudino Oliveira             |")
+                    print("|________________________________________________|")
+                    break
+                else:
+                    raise ValueError("Opção inválida. Tente novamente.")
+            except ValueError as e:
+                print(f"Erro: {e}")
+            except Exception as e:
+                print(f"Ocorreu um erro no sistema principal: {e}")
+            finally:
+                print("Processo principal finalizado.")
