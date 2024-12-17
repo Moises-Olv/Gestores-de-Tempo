@@ -31,7 +31,7 @@ class SistemaDeGerenciamento:
         return re.match(r'^\d{2}:\d{2}$', hora) is not None
 
     def cadastrar_usuario(self):
-        try:
+        try:#Envolve o código que pode gerar erros durante o cadastro do usuário
             nome = input("Digite o seu Nickname da vida Real: ")
             matricula = input("Matricula ou CPF: ")
             if not matricula:
@@ -56,10 +56,10 @@ class SistemaDeGerenciamento:
                 self.refeitorio.contagem_janelas[horario_escolhido] += 1
                 print("Usuário cadastrado com sucesso (°u°)")
                 
-        except ValueError as e:
+        except ValueError as e:#Este bloco captura erros do tipo ValueError, que são lançados quando há um problema com os dados inseridos, como um valor inválido.
             print(e)
 
-        except Exception as e:
+        except Exception as e:#Analisar outro erro inesperado que não seja do tipo ValueError
             print(f"tem erro:{e}")
 
 
@@ -87,7 +87,7 @@ class SistemaDeGerenciamento:
                                 if horario == horario_escolhido:
                                     self.refeitorio.contagem_janelas[chave] += 1
                                     break
-            except FileNotFoundError:
+            except FileNotFoundError:#Captura o erro específico de "arquivo não encontrado" 
                 print("O arquivo de usuários não foi encontrado.")
             except Exception as e:
                 print(f"Ocorreu um erro ao carregar os usuários:{e}")
